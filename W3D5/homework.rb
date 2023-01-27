@@ -122,5 +122,50 @@ a = Node.new('a', [b, c])
 #end
 
 # Depth First Search
+# ADT/Data Structure used for implementing STACK - Array 
+# Uses RECURSION!!!!!
+# Pseudo Code
+
+#def DFS(root, target)
+#	# create stack array
+#	# push root node into array
+#	# Base Case: Return node if node is target
+
+#	# iterate through node's children [b, c]
+#		# call DFS on each child node
+#		# if result is not nil, return node (this means we found the node we want and we have to return that node)
+#		# We don't want to return nil because that could return too early when we didn't get to check other nodes. 
+#	# return nil if target not found
+#end
+
+#STACK FRAME 1 
+#	root = a
+#	target = d 
+
+#	stack = a
+#	is a == target? NO
+
+#	iteration loop 1 - [b, c]
+#		DFS(b, target) # Result of stack from 2: NODE d
+
+#________________
+#STACK FRAME 2 
+#	root = b  
+#	target = d
+
+#	stack[b]
+#	 is b == d ? NO 
+
+#	iteration loop 1 - [d, e]
+#		DFS(d, target) # Result of stack frame 3: NODE d
+#_____________________
+#STACK FRAME 3
+#	root = d 
+#	target = d 
+
+#	stack = [d]
+#	is d == d ? YES! 
+#	Return Node d 
+#end
 
 

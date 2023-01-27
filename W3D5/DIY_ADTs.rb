@@ -29,27 +29,35 @@ p stackz.push(4)
 p stackz.pop
 p stackz.peek
 
-class Queue #FIFO
+class My_Queue #FIFO
 	def initialize 
 		@line = []
 	end
 
 	def enqueue(el)
-		@line.unshift(el)
+		line.unshift(el)
+		true
 	end
 
 	def dequeue
-		@line.pop
-		@line
+		line.pop
+		line.dup
 	end
 
 	def peek
-		@line[-1]
+		line[-1]
 	end
+
+	def show
+		line.dup
+	end
+
+	private
+	attr_reader :line
 end
 
 puts 'Queue'
-queuesss = Queue.new
+queuesss = My_Queue.new
 p queuesss.enqueue(1)
 p queuesss.enqueue(2)
 p queuesss.enqueue(3)

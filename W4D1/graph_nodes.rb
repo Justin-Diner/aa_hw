@@ -38,3 +38,34 @@ e.neighbors = [a]
 f.neighbors = [e]
 
 p GraphNode.bfs(a, "f")
+
+# Class Time
+#  		1
+#		/\
+#	   2  3
+#	  /\   /\
+#	4	5 6  7
+
+class PolyTreeNode
+	def dfs(target)
+		return self if self.value == target
+
+		self.children.each do |child|
+			result = child.dfs(target)
+			return result unless result.nil? 
+		end
+	nil
+	end
+
+	def bfs(target)
+		queue = [self] #root node
+
+		until queue.empty?
+			node = queue.shift 
+			return node if node.value == target
+			node.children.each do |child|
+				queue << child
+			end
+		end
+	end
+end

@@ -68,6 +68,7 @@ class Simon
 
   def game_over_message
 		system("clear")
+		p "The last added color was: #{self.seq[0]}"
 		p "Game Over"
 	
   end

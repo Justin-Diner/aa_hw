@@ -1,0 +1,55 @@
+validations operate in your Ruby code, while constraints operate in the database. So the basic rule is:
+Validations are defined inside models.
+Constraints are defined inside migrations.
+
+Use validations
+ If a user chooses a previously chosen username, they should not get a 500 error page; Rails should nicely ask for another name. This is what model-level validations are good at. Rails provides built-in helpers for common validations, making them easy to add. 
+
+When does validation happen?
+Whenever you call save/save! on a model, ActiveRecord will first run the validations to make sure the data is valid before permanently persisting it to the DB. If any validations fail, the object will be marked as invalid and Active Record will not perform the INSERT or UPDATE operation.
+To signal success saving the object, save will return true; otherwise false is returned. save! will instead raise an error if the validations fail, which is often helpful in development.
+
+valid?
+Before saving, Active Record calls the valid? method; this is what actually triggers the validations to run. If any fail, valid? returns false. Of course, when save/save! call valid?, they are expecting to get true back. If not, Active Record won't actually perform the SQL INSERT/UPDATE.
+You can also use this method on your own. 
+
+errors.messages
+(#errors returns an instance of ActiveModel::Errors. You can access an array of the error messages for a specific attribute--e.g., :name--directly through errors like this: #errors[:name].).
+The errors.messages method is only useful after validations have been run because it only inspects the errors collection and does not trigger validations itself. You should always first run valid? or save or some such method before trying to access errors.
+
+errors.full_messages
+To get an array of human readable messages, call record.errors.full_messages.
+
+presence
+The most common validator by far, the presence helper validates that the specified attributes are not empty.
+
+uniqueness
+This helper validates that the attribute's value is unique:
+class Account < ApplicationRecord
+  # no two Accounts with the same email
+  validates :email, uniqueness: true
+end
+
+Less common helpers
+format
+Tests whether a string matches a given regular expression
+length
+Tests whether a string or array has an appropriate length. Has options for minimum and maximum.
+numericality; options include:
+greater_than/greater_than_or_equal_to
+less_than/less_than_or_equal_to
+inclusion
+in option lets you specify an array of possible values. All other values are invalid.
+
+Validations II: Custom Validations
+When the built-in validation helpers are not enough for your needs, you can write your own validation methods or validator classes.
+
+Validations III: Common Validation Options
+:allow_nil/:allow_blank
+The :allow_nil option skips the validation when the value being validated is nil.
+
+:message
+Most validators will come up with a default error message on your behalf. Sometimes you want more control over the message reported to the user. In this case, you will want to use the :message option. This lets you provide a string to use as the error message.
+
+:if
+Sometimes it will make sense to validate an object only when a given predicate is satisfied. You may use the :if option when you want to specify when the validation should happen. If you want to specify when the validation should not happen, then you may use the :unless option.

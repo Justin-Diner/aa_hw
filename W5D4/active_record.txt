@@ -1,0 +1,45 @@
+Associations I: belongs_to And has_many
+You Should be Able to: 
+	1. Declare associations between Active Record models
+	2. Understand the various types of Active Record associations
+	3. Use the methods that associations add to your models
+
+	Associations tell ActiveRecord (through ApplicationRecord) that there is a connection between the two models.
+
+	class Course < ApplicationRecord
+  belongs_to(
+    :professor,
+    class_name: 'Professor',
+    foreign_key: :professor_id,
+    primary_key: :id
+  )
+end
+
+class Professor < ApplicationRecord
+  has_many(
+    :courses,
+    class_name: 'Course',
+    foreign_key: :professor_id,
+    primary_key: :id
+  )
+end
+
+belongs_to versus has_many
+A belongs_to sets up a connection that will fetch a single associated object.
+Use a belongs_to association when an object has a foreign key that points to the associated record. 
+
+has_many
+You use belongs_to when the record holds a foreign key that references an associated object. What if you want to go in the opposite direction? What if you want to go in the opposite direction? 
+You use has_many when a record holds a column (the primary key) that is referred to by a foreign key in the associated records.
+The rule is that if the record holds a reference pointing to the associated record, use belongs_to. If the record is pointed to by the associated records, use has_many.
+TLDR:
+If a model has a foreign key (i.e., xxxx_id), add a belongs_to association. Then add a corresponding has_many association on the model linked to in the belongs_to.
+
+The solution: has_many :through
+You can use a new kind of association, has_many :through, that connects two existing associations. Important note: a has_many :through association has nothing to do with traditional has_many. A has_many :through association associates records through other tables.
+
+Associations III: has_one And HABTM
+has_one is a has_many association where at most one associated record will exist. As a convenience, instead of returning an empty or one-element array, has_one will return the associated object (or nil, if the associated object doesn't exist). The has_one :through association acts the same as a has_many :through. It signifies that only one record (at most) will be returned, however, so Active Record knows not to put the record in an array
+
+The has_and_belongs_to_many (HABTM) association
+Active Record has a way of defining a many-to-many association without requiring a model for the intervening join table. This is the has_and_belongs_to_many association.

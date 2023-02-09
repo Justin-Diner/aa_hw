@@ -1,0 +1,136 @@
+Rails is an MVC framework. MVC or Mode-View-Controller, is a design pattern that divides an application into three basic parts, each responsible for handling a different task. 
+	1. The model is concerned with retrieval of information from storage, as well as any logic done to that information. 
+	2. The view is concerned with presenting information. 
+	3. The controller is concerned with constructing the server's HTTP response and sends commands to the model to fetch or update information, and to the view to display information. It acts as the inteface between the model and view. 
+
+Rails introduced Convention over Configuration (CoC). COC means that the default configuation is already programmed into the framework. 
+
+REST - Representational State Transfer 
+An architectural style for web services. A RESTful web service allows for access to web resources using standard operations, such as HTTP's GET, POST, PATCH or DELETE. The idea behind REST is that each one of these operations, in combination with a particular resource identifier, will have a predictable, standardized result. 
+
+RESTful webservices are stateless. This means that each request/response cycle is independent of any other request/response cycle. However, data can be cached. 
+
+COMPONENTS
+1. Active Record
+All models inherit from Active Record. Active Record is an ORM (Object Relational Mapping). In addition, Active Record contains a number of methods which implement basic CRUD functionality. 
+
+2. Action Controller 
+Handles the controller logic. Action Controller allows for access to various cookies, which can store small amounts of data such as information about the session or brief error messages that can persist. 
+
+3. Action Cable
+Provides a framework for integrating WebSockets into a Rails application. Websockets are persistent and bidirectional. This allows real-time features such as live chat and push notifications. 
+
+4. Action Mailbox and Action Mailer
+Enables a Rails app to receive and process incoming email. Its counterpart, Action Mailer, enables a Rails app to send email using templates. 
+
+5. Action View
+Responsible for rendering views. One of the supported file types is ERB, or Embedded Ruby. THis is a mix of HTML and Ruby code. 
+
+6. Rake
+Rake is a utility took packaged with Rails that handles task management. It can be thought of as a scripting tool for Rails, used to carry out administrative tasks such as migrating a database and displaying routes. 
+
+7. Rack
+Rack is a piece of middleware that sits between Rails router and the web server (e.g., Puma), receiving HTTP requests from the server and generating responses using information from the router. 
+
+8. Puma 
+Beginnign with V.5, Rails ships with the Puma HTTP server. Built around a fast Ragel HTTP parser and tailored specifically to run only Rack applications, Puma is both very fast and very light, typically requriing less memory usage than other comparable web servcers. It is multi-threaded, meaning it can handle multiple requests concurrently. 
+
+gem install rails
+rails new demo_project -G -T -d=postgresql --minimal
+
+The -G stops it from establishing a git repository. 
+The -T flag tells Rails to skip setting up its internal Test::Unit files.
+The -d flag (or --database) allows you to specify the database for your project. It will add the correct gem and set up sensible defaults in config/database.yml for the specified database. Rails defaults to sqlite3, but you will usually want to use postgresql in this course.
+--minimal instructs Rails to build a minimalist application. As a result, it will not install Action Cable, Action Mailbox, Action Mailer, Action Text, Active Job, Active Storage, Bootsnap, Web Console, JavaScript, Jbuilder, System Tests, or Hotwire (i.e., Turbo and Stimulus). 
+Change the debug gem to byebug:
+______________________________________
+group :development, :test do
+  gem "byebug", platforms: %i[ mri mingw x64_mingw ]
+end
+_______________________________________
+
+To Start DB Server:
+sudo service postgresql start
+
+TO create a new migration named AddPartNumberToProducts you run the command:
+rails generate migration AddPartNumberToProducts
+Migrations are stored as files in the db/migrate directory, one for each migration class. The name of the file is of the form YYYYMMDDHHMMSS_create_products.rb: the first part is a UTC timestamp followed by an underscore followed by the name of the migration. The name of the migration class (CamelCased version) should match the latter part of the file name; otherwise Active Record will be confused. For example 20080906120000_create_products.rb should define class CreateProducts and 20080906120001_add_details_to_products.rb should define AddDetailsToProducts.
+
+Inside your up/down or change methods, you may call methods of the parent class ActiveRecord::Migration[7.0]. Here we go through some of the most common.
+Creating tables
+create_table :products do |t|
+  t.string :name
+  t.float :price
+
+  t.timestamps
+end
+
+Supported column types include:
+
+:boolean
+:bigint
+:date
+:datetime
+:float
+:integer
+:string
+:text
+:time
+
+Changing tables
+add_column :table_name, :column_name, :type, options_hash
+remove_column :table_name, :column_name
+rename_column :table_name, :old_column_name, :new_column_name
+rename_table :old_table_name, :new_table_name
+add_index :table_name, [:column1, :column2], options_hash
+change_column :table_name, :column_name, :type, options_hash; you can:
+Change the data type of a column
+Add the option null: false to add a NOT NULL constraint
+Add the option default: value to specify a default value
+
+For example, to add user_id to the applications table:
+
+def change
+  add_column :applications, :user_id, :integer
+end
+
+Including t.timestamps is good practice, so good, in fact, that Rails will automatically include t.timestamps in your generated migrations. 
+
+To actually perform the migrations you have written but not yet run, use the command rails db:migrate.
+
+How does Rails know what migrations to run? It runs all "pending" migrations, i.e., migration files in db/migrate that have not been previously run. To see the status of your migrations, use the command rails db:migrate:status.
+
+You should never, ever edit old migrations. Edit migrations by creating new migrations to change your table. 
+
+To roll back the most recent migration, run rails db:rollback. To roll back multiple migrations at once, use the STEP parameter. For example, rails db:rollback STEP=4 will roll back the last 4 migrations.
+
+Model classes and ActiveRecord::Base
+For each table, you will define a Ruby model class; an instance of the model will represent an individual row in the table. For instance, a physicians table will have a corresponding Physician model class; when you fetch rows from the physicians table, you will get back Physician objects. All model classes extend ApplicationRecord, which in turn extends ActiveRecord::Base. Methods in ActiveRecord::Base will allow you to fetch and save Ruby objects from/to the table.
+
+Rails comes with the following application_record.rb in your models folder:
+
+class ApplicationRecord < ActiveRecord::Base
+  primary_abstract_class
+end
+
+::find and ::all
+The first methods you'll learn are for fetching records from the DB:
+Physician.all
+Physician.find(101)
+
+::where queries
+Often you will want to look up records by some criteria other than primary key. To do this, you can use ::where:
+Physician.where('home_city = ?', 'La Jolla')
+# return an array of Physicians based in La Jolla
+Physician.where('home_city = ?', 'La Jolla')
+# Executes:
+#   SELECT *
+#     FROM physicians
+#    WHERE physicians.home_city = 'La Jolla'
+
+By extending ActiveRecord::Base through ApplicationRecord, your model class will automatically receive getter/setter methods for each of the database columns. This is convenient, since you won't have to write attr_accessor for each column. Great! As you know from your previous AA Questions project, this will not have saved jonas to the Database. To do so, you need to call the ActiveRecord::Base#save!
+
+Finally, you can destroy a record and remove it from the table through #destroy:
+
+If you want to access a SQL console, you may conveniently run rails dbconsole.
+To do likewise in Rails, run rails console (or rails c for the impatient). If you've added the pry-rails gem as suggested, you still get the pry sweetness you've become accustomed to. (If not, the console will load irb.)

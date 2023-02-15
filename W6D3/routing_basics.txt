@@ -1,0 +1,38 @@
+The rails router recognizes URLs and chooses the controller action to which it will dispatch the request for processing. The router receives a GET request. 
+
+The router defines the structure of your application's API. THe router defines what the valid paths are and decides what code to run to construct the response. 
+
+FlickrClone::Application.routes.draw do
+  resources :photos
+end
+
+HTTP Verb	Path	action	used for
+GET	/photos	index	display a list of all photos
+GET	/photos/new	new	return an HTML form for creating a new photo
+POST	/photos	create	upload and create a new photo
+GET	/photos/:id	show	display a specific photo
+GET	/photos/:id/edit	edit	return an HTML form for editing a photo
+PATCH or PUT	/photos/:id	update	update a specific photo
+DELETE	/photos/:id	destroy	delete a specific photo
+
+The areas in the path that start with a : (i.e., :id) are called dynamic segments; :id can match any string not containing a /. 
+
+Controllers are always named in the plural: PhotosController, UsersController, etc. When defining a plural resource (resources), use the plural name of the model/controller (:photos).
+
+In REST, URLs refer either to collections of resources or to single instances of resources. The different HTTP methods specify the limited number of things you can do to a collection/instance (create, read, update, destroy).
+
+Paths and Routing Helpers
+Specifying a resource route will also create a number of routing helper methods that your controllers and views can use to build URLs. In the case of resources :photos:
+
+method	url
+photos_url	http://www.example-site.com/photos
+new_photo_url	http://www.example-site.com/photos/new
+photo_url(@photo)	http://www.example-site.com/photos/#{@photo.id}
+edit_photo_url(@photo)	http://www.example-site.com/photos/#{@photo.id}/edit
+
+To get a complete list of routes, execute the "rails routes" command. 
+
+Using root 
+You can specify the controller action that Rails should run for GET / by using the root method:
+root 'posts#index'
+This invokes the PostsController's index method when the root URL is requested.

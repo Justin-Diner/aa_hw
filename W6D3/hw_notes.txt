@@ -1,0 +1,115 @@
+Rails utilizes the MVC pattern (Model-View-Controller) pattern. 
+
+Model Layer
+The Model layer represents the domain model (such as Account, Product, Person, Post, etc.) and encapsulates the business logic specific to your application.
+
+Controller Layer
+The Controller layer is responsible for handling incoming HTTP requests and providing a suitable response. Usually this means returning HTML, but Rails controllers can also generate XML, JSON, PDFs, mobile-specific views, and more. Controllers load and manipulate models, and render view templates in order to generate the appropriate HTTP response. 
+
+View Layer
+The View layer is composed of “templates” that are responsible for providing appropriate representations of your application's resources.
+
+API = Application Programming Interface
+Difference between WebService and Website
+WebService - Just gives back raw data. 
+	- Mobile application
+	- Server to Server application 
+	- Client-side rendering (SPA)
+Website - Includes assets to be rendered by browser
+
+HTTP Requests and Responses 
+You are the client and you make an HTTP request to the Server.
+HTTP Requests
+
+HTTP Requests must have a method and a path. It can also include a body and a response. 
+
+Methods 
+	- GET 
+	- PUT 
+	- PATCH 
+	- POST 
+
+Path = /users
+Everything after the ? is the query string. It is separated by key-value pairs. 
+
+Request body:
+Also key value pairs. Normally comes from a form. GET requests cannot have bodies. The body is basically just additional data. 
+
+Response 
+Can be a status code (200 -OK, 404 - Not Found )
+Can also have a body 
+
+How Does Rails do this? 
+Router - takes in path and method. (/user, GET)
+	- Checks routes, 
+	- Initializes a controller
+	- Calls the Right Action 
+
+Controller - Controls one resource. They process requests about Users. Controllers have things called actions (methods). 
+
+ROUTER 
+Routes use DSL (Domain Specific Language)
+Write the HTTP method and the Path. 
+
+If that matches, figure out which controller it goes to. 
+
+get 'superheroes', to: 'superheroes#index
+get 'superheroes/:id', to: 'superheroes#show' (shows you a particular hero)
+post 'superheroes', to: 'superheroes#creaate' (create a superhero)
+patch 'superheroes/:id', to: 'superheroes#update' (update)
+put 'superheroes/:id', to: 'superheroes#update' 
+delete 'superheroes/:id', to: 'superheroes#destroy' 
+
+Rails generates all of these for you. 
+Can all be created with:
+#resources :superheroes, only: [:index, :show, :create, :update, :destroy]
+
+REST - Representational State Transfer 
+GET - Returns all the values.
+
+Utilize the resources method:
+
+Rails.application.routes.draw do
+
+get 'silly', to: 'silly#fun' 
+post 'silly', to: 'silly#time 
+post 'silly/:id', to: 'silly#super'
+
+resources :superheroes do 
+	resources :abilities, only:[ :index]
+end
+
+resources :abilities, only: [:show, :update, :create, :destroy]
+end 
+
+CONTROLLER 
+Name needs to be what is in the route_controller. Also, should be proud CamelCase
+
+class SillyControler < ApplicationController 
+
+	def fun
+		render text: "Hello"  
+	end
+
+	def time
+		render json: params  
+	end 
+
+	def super 
+		render json: params 
+	end
+end
+
+In Controllers there are params. You access it by typing "params". It is a hash like object. You can get it from:
+1. Query string
+2. Request body
+3. URL Params/route params (wildcards)
+
+class SillyControler < ApplicationController 
+
+	def fun
+		render json: params  
+	end
+end
+
+bundle exec rake routes 

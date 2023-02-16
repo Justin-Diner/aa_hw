@@ -1,0 +1,157 @@
+Inverses
+When you have a has_many and a belongs_to association, Rails recognizes this as an inverse relationship. 
+There are a few sitautions, that will prevent Rails form automatically inferring an inverse relationship. 
+
+inverse_of establishes bi-directional associations. 
+You can specify the inverse relationship to avoid confusion: 
+
+class User < ApplicationRecord
+  has_many :comments, foreign_key: :author_id, inverse_of: :author
+end
+
+class Comment < ApplicationRecord
+  belongs_to :author, class_name: :User
+end
+
+Rails CANNOT infer an inverse on any association that has the foreign_key option set. If EITHER part of the bi-directional association includes a foreign_key option, add an inverse_of option to the has_many/has_one association. 
+
+A through option will also prevent Rails from automatically setting an inverse. If a through references a join table, you should add the inverse_of to the belongs_to association.
+Ex:
+
+class Like < ApplicationRecord
+  belongs_to :user, inverse_of: :likes
+  belongs_to :post, inverse_of: :likes
+end
+
+class User < ApplicationRecord
+  has_many :posts
+  has_many :likes
+  has_many :liked_posts, through: :likes, source: :post # i.e., posts that the user has liked
+end
+
+class Post < ApplicationRecord
+  belongs_to :user
+  has_many :likes
+  has_many :likers, through: :likes, source: :user
+end
+
+
+This is necessary to ensure that if you, e.g., create a post through the liked_posts association--i.e., essentially creating and liking a post at the same time--that saving the newly created post to the database will also create the intervening Like joining the user to the liked post:
+
+Can read up on inverses in the Rails documentation. 
+
+______________________________________________________
+CALLBACKS
+The Rails Guide defines callbacks as:
+	"methods that get called at certain moments of an object's life cycle. With callbacks it is possible to write code that will run whenever an Active Record object is created, saved, updated, deleted, validated, or loaded from the database."
+
+In other words, a callback is a method that you set to run before, around, or after one of the life-cycle events. For example, the dependent: :destroy option on an association effectively registers a destroy callback to be run on the object's dependents before destroy is run on the original object.
+
+class User < ApplicationRecord
+  validates :random_code, presence: true
+  before_validation :ensure_random_code
+
+  protected
+  def ensure_random_code
+    # assign a random code
+    self.random_code ||= SecureRandom.hex(8)
+  end
+end
+
+It is considered good practice to declare callback methods as protected or private.
+There are many available Active Record callback registration macros. Here are a few of the most common:
+
+	before_validation (handy as a last chance to set forgotten fields)
+	after_create (handy for performing some post-create logic, like sending a confirmation email)
+	after_destroy (handy for performing post-destroy clean-up logic)
+
+______________________________________________________
+DNS - DOMAIN NAME SYSTEM 
+
+The "Domain Name System," or DNS, is a naming system that translates domain names to IP addresses (e.g., "www.example.com" translates to "93.184.216.119" and "2606:2800:220:6d:26bf:1447:1097:aa7"). 
+
+A query's journey will start with its being sent from a DNS resolver to a DNS name server.That name server can deliver a result directly if it doesn't need to look anything else up (this typically happens as a result of DNS look-up caching).
+
+Cache Poisoning
+A common attack on the DNS takes the form of "cache poisoning," where an attacker will try to replace valid cache entries with corrupted data. 
+
+______________________________________________________
+JSON and Rails
+The key to building a Rails API is to get your controllers to convert model objects into JSON, and then return the JSON. This requires support at two layers: the model layer (convert a model to JSON) and the controller layer (return the JSON to the user).
+
+Models and to_json
+Controllers and render json:
+Controllers, too support responding to a request with JSON. All controller actions must end in some response back to the requestor.That response in Rails is built by calling either render (places something in the response body) or redirect_to (sends a response that asks the requestor to make a whole new request to a different URL). Usually, when you call render, you'll specify an HTML template. 
+
+Routing II: Nested Resource Routes 
+It's common to have resources that are "children" of other resources. 
+Nested routes allow you to capture this relationship in your routing. 
+
+Models: 
+# app/models/magazine.rb
+class Magazine < ApplicationRecord
+  has_many :articles
+end
+
+# app/models/article.rb
+class Article < ApplicationRecord
+  belongs_to :magazine
+end
+
+Router 
+NewspapersApp::Application.routes.draw do
+  resources :magazines do
+    # provides a route to get all the articles for a given magazine.
+    resources :articles, only: :index
+  end
+
+  # provides all seven typical routes
+  resources :articles
+end
+
+This generates a /magazines/:magazine_id/articles route.
+Controller 
+
+class ArticlesController
+  def index
+    if params.has_key?(:magazine_id)
+      # index of nested resource
+      @articles = Article.where(magazine_id: params[:magazine_id])
+    else
+      # index of top-level resource
+      @articles = Article.all
+    end
+
+    render json: @articles
+  end
+end
+
+Restricting Nested Member Routes
+You can restrict what routes you build for a resource using the :only option. The code above tells the nested resource to generate only the index route.
+You are not limited to the eight default RESTful routes. You can create any number of additional member and collection routes.
+
+Adding member routes
+To create a new member route, add a member block into the resource block:
+
+resources :photos do
+  member do
+    get 'preview'
+  end
+end
+
+Adding collection routes
+As you might expect, you can add a new collection route using the same syntax as above with collection substituted for member:
+
+resources :photos do
+  collection do
+    get 'search'
+  end
+end
+
+or 
+
+resources :photos do
+  get 'search', on: :collection
+end
+
+These two options for adding new collection routes will both route a GET request for /photos/search to the search action of PhotosController and create a search_photos_url helper.

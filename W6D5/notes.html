@@ -1,0 +1,25 @@
+<!-- Test --> 
+
+<form action="<%= books_url %>" method="post">
+	<label for="title">Title</label>
+	<input id="title" type="text" name="book[title]">
+
+	<label for="author">author</label>
+	<input id="author" type="text" name="book[author]">
+
+	<label for="year">year</label>
+	<input id="year" type="text" name="book[year]" value="<%= @book.year %>">
+
+	<label for="category">Category</label>
+	<select id="category" name="book[category]">
+		<option disabled>Please Select</option>
+		<option value="Fiction" <%= @book.category == "Fiction" ? "selected : "" %>>">Fiction</option>
+		<option value="Non-Fiction" <%= @book.category == "Non-Fiction" ? "selected : "" %>>Non-Fiction</option
+		<option value="Memoir" <%= @book.category == "Memoir" ? "selected : "" %>>Memoir</option>
+	</select>
+
+	<label for="description">Description</label>
+	<textarea name="book[description]"></textarea>
+
+	<input type="submit" value="Add Book to Library">
+</form>

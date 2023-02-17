@@ -1,0 +1,81 @@
+ERB - Embedded Ruby 
+<% ruby_code_here %> executes Ruby code that does not return anything, e.g., conditionals, loops, or blocks.
+<%= %> is used when you want to embed the return value into the template, i.e., something that will actually show up in the HTML.
+
+EXAMPLE:
+<b>Names of all the people</b>
+<ul>
+  <% ['Tom', 'Dick', 'Harry'].each do |name| %>
+    <li>
+      Name: <%= name %>
+    </li>
+  <% end %>
+</ul>
+
+To comment code use %= 
+The %# means to skip evaluating the embedded Ruby. 
+
+Instance Variables
+Controllers make data available to the view layer by setting instance variables. By default, the view has no other access to the controller or its methods.
+
+# app/controllers/products_controller.rb
+class ProductsController < ApplicationController
+  def index
+    # get an array of all products, make it available to view
+    @products = Product.all
+    render :index
+  end
+end
+
+<!-- app/views/products/index.html.erb -->
+<h1>All the products!</h1>
+<ul>
+  <% @products.each do |product| %>
+    <li>
+      <%= product.name %>
+    </li>
+  <% end %>
+</ul>
+
+_______________________________
+PARTIALS 
+Views can get really long and complicated. Just like you break up long methods into smaller ones, you can also break up views into smaller bits, called partials.
+
+To render a partial as part of a view, you use the render method within the view:
+<h1>Page title</h1>
+
+<p>
+  Here's some content for you
+</p>
+
+<!-- insert standard footer -->
+<%= render "footer" %>
+
+This will render a template named _footer.html.erb and insert the rendered content at this point within the view. Note the leading underscore character in the filename: partials are named with a leading underscore to distinguish them from regular views, even though they are referred to without the underscore. 
+
+Passing local variables
+Just like with methods, you can also pass local variables into partials, making them even more powerful and flexible.
+_______________________________
+
+Rails Parameter Conventions
+Rails stores parameters in an ActionController::Parameters object that you can access by calling params.
+
+Basic structures: Hash
+<input id="person_name" name="person[name]" type="text" value="Henry">
+{ 'person' => { 'name' => 'Henry' } }
+
+Basic structures: Arrays
+The last value wins; Rails overwrites any prior values. 
+When you want Rails to build an array, you append an empty set of square brackets to the name:
+<input name="person[phone_numbers][]" type="text" value="555-123-4567">
+<input name="person[phone_numbers][]" type="text" value="555-765-4321">
+<input name="person[phone_numbers][]" type="text" value="555-135-2468">
+{ 'person' => {
+    'phone_numbers' => [
+      '555-123-4567',
+      '555-765-4321',
+      '555-135-2468'
+    ]
+  }
+}
+

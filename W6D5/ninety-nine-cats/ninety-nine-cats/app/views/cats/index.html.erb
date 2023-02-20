@@ -1,0 +1,12 @@
+<h1>Cat Time</h1>
+<% @cats.each do |cat| %>
+	<ul>
+		<li>
+		<a href="<%=cat_url(cat.id)%>">
+			<%= cat.name %>
+		</a></li>
+	</ul>
+<% end %>
+
+
+	

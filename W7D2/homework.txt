@@ -1,0 +1,37 @@
+Flash vs flash.now 
+Data stored in flash will be available to the next controller action and can be used when redirecting. 
+Data stored in flash.now will only be available in the view currently being rendered by the render method. 
+
+Rendering Errors
+A common way to render errors is store them in ``flash[:errors]`` after running validations. Note that flash can be used as a hash and :errors is just an arbitrary key. If you follow the pattern of always storing obj.errors.full_messages in flash[:errors], then you can use a partial to render the flash errors on each form.
+
+View 
+When the new or edit pages are rendered, also render a list of all of the errors, if any.
+<!-- layouts/_errors.html.erb -->
+<% if flash.now[:errors] %>
+  <% flash.now[:errors].each do |error| %>
+   <%= error %><br />
+  <% end %>
+<% end %>
+
+<!-- views/users/new.html.erb -->
+<%= render partial: 'layouts/errors' %>
+
+<!-- views/users/edit.html.erb -->
+<%= render partial: 'layouts/errors' %>
+
+CSRF (Cross-site Request Forgery) and Forms 
+Rails tries to protect against CSRF. On each request, Rails will set an authenticity token in your session. Its just a random number. When you make any non-GET request to Rails (POST, PUT, DELETE), Rails will expect the client to also upload the authenticity token in the params. 
+
+On any non-GET request, if the authenticity token in the uploaded form data does not match the token in the session, Rails will raise the ActionController::InvalidAuthenticityToken exception. This is because the default strategy is set to :exception. Optionally, you can change the strategy in ApplicationController, setting to :null_session--in which case Rails will blank out the session for the duration of the request instead of raising an exception--or :reset_session, in which case Rails will completely reset the session, effectively logging the user out.
+# app/controllers/application_controller.rb
+
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :null_session
+end
+
+Browsers do sandboxing. There is no way to reach in and see everyone's cookies. 
+We are going to use rails CSRF protection. 
+Rails has an authenticity_token. 
+
+View Helpers

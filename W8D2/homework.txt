@@ -1,0 +1,106 @@
+In Javascript, an expression is a line of code that returns a value. A statement is any line of code. Every expression needs a semi-colon at the end.
+
+In Javascript, zeros, empty strings, undefined, null, and NaN are all considered falsey values. Everything else is true.
+
+A primitive type is data that is not an object and cannot have methods. This is different from Ruby where everything is an object.
+
+Objects in JavaScript are similar to objects in Ruby in that they can store both state (Ruby instance variables) and behavior (Ruby methods).
+
+In JavaScript you can construct a new object like so:
+
+var cat = {
+  name: "Breakfast",
+  age: 8,
+  purr: function () {
+    console.log("meow!");
+  }
+};
+
+We say that name, age, and purr are the properties of the cat object.
+
+In Ruby everything is an object;
+whereas in JS there are primitive data types that are not objects.
+
+JavaScript has 6 data types:
+
+5 Primitive Types:
+Numbers
+String (text)
+Boolean
+Undefined
+Null
+and objects.
+
+NaN stands for Not-A-Number. It is a property of the global object and is not a JS data type. NaN is the result of any illegal numerical operations.
+
+We can use let to declare block-scoped variables. Examples of blocks in javascript include if statements, while loops, switch statements, and for loops (more on these later).
+
+We use const to declare constants. Constants should be used for constructs that will not be re-declared or re-assigned.
+Properties of constants:
+
+They are block-scoped like let.
+Unlike Ruby constants, JavaScript will actually enforce constants by raising an error if you try to reassign them.
+Trying to redeclare a constant with a var or let by the same name will also raise an error.
+
+JavaScript Functions
+Functions in JavaScript are just a special type of JS objects. In other words, you can do anything to a function that you can do to an object.
+
+Assigning properties to a function
+const fun = function() {
+  console.log("So much fun");
+};
+
+fun.amount = 100;
+console.log(fun.amount);
+// => 100
+
+Passing a function as an argument to another function
+Functions that are passed as an argument to another function are called callbacks.
+
+function logIfEven(num) {
+  if (num % 2 === 0) {
+    console.log(`${num} is an even number!`);
+  }
+}
+
+[1, 2, 3].forEach(logIfEven);
+
+Object Oriented JavaScript 
+
+class NBAPlayer 
+	def initialize(...)
+		@name = name 
+		@team = team 
+		@position = position 
+
+	def dunk 
+		...
+	end 
+end 
+
+					constructor function 
+function NBAPlayer(name, team, position) {
+		this.name = name 
+		thhis.team = team 
+		this.position = position 
+}
+
+const curry = new NBAPlayer("curry", "wizards", "pg")
+
+NBAPlayer.prototype.dunk = function() {
+
+}
+
+Every function in JavaScript has a prototype property. 
+
+Method Style 
+curry.dunk();
+
+curry__proto__ === NBAPlayer.prototype 
+
+You get access to any variables declared before it. 
+
+Closures capture variables declared outside of them. Closures can change the value of variables they are capturing.  
+
+Callback - Function passed to another function as an argument to be called at a later time. Often see callbacks for asychronous functions. 
+

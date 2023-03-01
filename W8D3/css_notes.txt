@@ -1,0 +1,76 @@
+Positioning 
+--------------
+	- Static 
+	- Relative 
+	- Absolute
+	- Fixed \
+
+Static 
+- Default behavior for everything is static. 
+- Shows up where expected 
+- Takes up space in the document flow. 
+- Informally "not positioned" 
+
+Relative 
+	 - Shows up where expected.
+	 - Always takes up space in the document flow 
+	 - Can be nudged left/right and top/bottom 
+	 - Coordinates are relative to its original position. 
+	 - When nudged, leaves original gap on the page.
+	 - Anything relative is in a layer on top of everything static. 
+	 - Allows Z-Index 
+	 - Creates a new coordinate system for anything children positioned absolute. 
+
+Absolute 
+	- Does NOT take up space in the document flow 
+	- Lifted up and placed on top of anything static. 
+	- Show by default where expected.
+	- Coordinate system is that of the nearest ancestor that is NOT static positioned. If none, default is the window.  
+	- Creates a new coordinate system for any children positioned absolute. 
+	- Top/bottom and left/right together, if no height is set, which stretches the element out. 
+	- Take up minimal space for content. 
+
+Fixed 
+	- Behaves similar to Absolute 
+	- FIxed to the window (does not scroll along with the document). 
+	- Coordinate systems is always the window.
+	- Use with caution. 
+	
+
+Z - Index 
+ - Is just a number 
+ - The greater the number the closer to the viewer 
+ - Negative numbers are behind everything static. 
+ - Positive numbers are always greater than negative numbers in z-index. 
+ - Nesting does matter. 
+ - Only applies to elements positioned relative, absolute and fixed
+ 
+ Overflow
+	- By default a block container expands vertically to accommodate its content
+	- If you set a fixed height on an element, but the content needs more space, it flows out of it by default	
+	- With the overflow property we can control what happens when content does not fit
+	- Weird gotcha: If the overflow: hidden property is set on a static element, it can only clip static children
+	- To clip absolute positioned children with this property, the parent cannot be positioned static itself but will have to be set to relative (or absolute or fixed)
+
+	Math using calc()
+	- Calc is a CSS function that can be used anywhere you may want a length value
+	- You can combine different units, making it extremely useful to subtract pixels from percentages
+	- You can do addition, subtraction, multiplication, and division
+	-You can use parentheses to denote order
+	- Example: width: calc((100% - 100px) / 2)
+
+Pseudo Content
+Used to inject content inside an element
+You can inject either after or before the present content inside an element
+Acts as inline elements inside element by default
+Can take any styling
+Needs a declared content property
+Content property can be a string or select an element's attribute
+
+h1:before {
+	content: "lll" 
+}
+
+h1:after {
+	content: ":(" 
+}

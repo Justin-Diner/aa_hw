@@ -1,0 +1,96 @@
+Scope 
+The scope of a method is the set of variables that are available for use within the method. The scope of a function includes: 1. the function's arguments; 2. any local variables declared inside the function; 3. any variables that were already declared when the function was defined.
+A nested function's scope includes variables declared in the scope where the function was nested.
+
+Functions such as greet that use (i.e., capture) such variables (i.e., free variables) are called closures.
+
+Applications
+
+Private State
+One advantage of the closure way is that the count is truly private. In the first example, there is no way any method beside the closure itself can access the count state. In the second example, a foolish user might set counter._count inadvertently.
+
+Global Scope
+JavaScript has global scope, represented by the 'window' object in the browser and the 'global' object in Node.js.
+
+Because constructor functions are invoked differently than normal functions, make sure to name constructor functions in capitalized CamelCase to distinguish them clearly from normal functions. A common mistake is to call constructor functions without using new. If you do that, this will not be set properly, and no new object will be created.
+
+Class Methods
+We can mimic Ruby class methods and class variables by defining attributes on the constructor itself.
+
+Kitten.caboodle = [k1, k2, new Cat('Flying Merkel', 3)];
+
+Kitten.parade = function() {
+  Kitten.caboodle.forEach( kitten => {
+    kitten.meow();
+  });
+};
+
+Kitten.parade();
+// 'Earl says "meow!"'
+// 'Houdini says "meow!"'
+// 'Flying Merkel says "meow!"'
+
+Constructor Steps: Recap
+Say we call let cat = new Cat(). Here's what JS does:
+
+JavaScript creates a new blank object.
+JavaScript sets a special cat.__proto__ property to Cat.prototype. This way the instance of the class is connected to a prototype where all the instance methods are defined.
+JavaScript runs the code in the body of the Cat function. It sets this to the blank object. The constructor presumably sets some attributes of the object.
+JavaScript ignores the return value of the constructor function. Instead, the new Cat instance is returned, and set to cat.
+
+Method calling: Recap
+Later, when a cat.meow() is requested
+JavaScript looks in the cat object for the meow property.
+It doesn't find it, so it accesses the cat.__proto__ property.
+This references Cat.prototype; JS searches for meow in the prototype.
+Cat.prototype.meow is defined, so this is returned.
+The meow method is called method style on cat, so this is set to cat.
+
+Functions Invocation, Briefly
+
+In JavaScript, 'javascript string'.toUpperCase (without parentheses) is not the same as 'javascript string'.toUpperCase() (with parentheses). The distinction is very important. If we want to actually invoke (i.e., execute) a function or method in JavaScript, we must signal that by adding parentheses.
+
+Arguments in Javascript
+Namely, JavaScript functions will happily take fewer arguments than specified (in which case the unspecified arguments have value undefined), or extra arguments (they will be available in a special arguments array-like object).
+
+Fewer Arguments
+JS functions can take fewer arguments than expected. In that case, unspecified arguments have the value undefined.
+
+More Arguments
+JS functions will also accept more arguments than are asked for. 
+You have access to all of the arguments through a special array called arguments. arguments is set each time you call a function. It contains the values of all the arguments: ones that were anticipated in the function definition, plus the extras.
+
+One very annoying thing about arguments is that it is not a true Array object. It is only Array-like in that it can be indexed with integers and has a length property. This is infuriating because we can't use any of our favorite Array methods.
+
+We can, however, use Array.prototype.slice to create a copy of arguments that is an array by calling it on arguments:
+
+Array.from (ES6+)
+
+Rest Parameters (ES6+)
+ the ... operator (Rest Operator). ... works just like Ruby's splat operator (*) and can be used to capture all a function's arguments into an actual array.
+ The differences between arguments and Rest Parameters are:
+
+Rest Parameters only grab un-named arguments.
+Rest Parameters give us back a real array, so we can use methods like forEach, pop, and sort.
+Rest arguments are often simpler to use than the old arguments keyword and are stylistically preferred by companies that have adopted ES6. However, for the sake of interviews and for understanding JavaScript, it is important to understand both forms of grabbing arguments.
+
+Spread Syntax (ES6+)
+ES6 also allows us to use Spread Syntax, which is like the Ruby splat for destructuring elements. We can now pass a "spread" array to a function with the ... as shown below:
+
+Default Values (ES6+)
+Default values are new to ES6. We can now set default values in a way similar to Ruby.
+
+Apply
+Function.prototype.apply takes two arguments: an object to bind this to, and an array of arguments to be passed to the method on which apply is being called.
+
+Call
+Function.prototype.call is really similar to apply, but instead of taking in an array of parameters, it takes them individually. 
+
+Intro to Callbacks: File I/O 
+
+Node I/O is Async
+You must use the readline library when writing server-side Node.js programs. 
+
+Asynchronous functions do not return meaningful values: we give them a callback so that the result of the async operation can be communicated back to us.
+
+module is a pre-defined variable set up by Node, and its exports property is returned whenever we require it from another file.

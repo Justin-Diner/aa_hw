@@ -107,3 +107,26 @@ It has two useful methods:
 
 push - This adds a new URL to the end of the history stack. That means that clicking the back button will take the browser to the previous URL. Note that pushing the same URL multiple times in a row will have no effect; the URL will still only show up on the stack once. In development mode, pushing the same URL twice in a row will generate a console warning. This warning is disabled in production mode.
 replace - This replaces the current URL on the history stack, so the back button won't return you to the current URL. Note: You should try to use <Redirect>, <Link>, or <NavLink> before using useHistory to redirect your user.
+
+useRouteMatch hook
+The useRouteMatch hook returns a match object with a key of url.
+
+React Router Documentation
+Now that you've had an introduction to React Router, feel free to explore the official documentation to learn more! As you become a full-fledged software engineer, remember that documentation is your friend. You can take a brief overview for now, as the documentation might include a lot of information at first. The more you learn about React, the more you should revisit the official documentation and learn!
+
+Setting up React Router
+React Router Quick Start
+BrowserRouter
+HashRouter
+Routes and Links
+Route
+Link
+NavLink
+Switch and Redirect
+Switch
+Redirect
+React Router hooks
+useParams
+useHistory
+useLocation
+useRouteMatch

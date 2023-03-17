@@ -1,0 +1,81 @@
+Importing and Exporting 
+Export a single item per filr by using ``export default``. 
+Export multiple items by using the ``export`` keyword without the default. 
+	Alternativitly you can export a single object that contains the names of all the items you wish to export from the file. But this is not the preferred method. 
+
+For ES6 modules, the import statements must always be at the top of the file because imports have to occur before the rest of the file's code runs.
+
+You can give items that are exported from with export default any name that you want when importing them.  For example, a Wallet class can be renamed to. 
+	export default class Wallet {
+		...
+	}
+
+import Money from wallet.js 
+const wallet = new Money();
+
+With named exports you do need to match the name. 
+
+Use an asterist (*) to import an entire module's contents. When importing with the *, you must alias your imported object using the ``as`` keyword. 
+
+export function sayHello() {
+  console.log('Hello!');
+}
+
+export const sayHi = () => {
+  console.log('Hi!');
+};
+
+// newFile.js
+import * as Greetings from 'greetings.js';
+
+Greetings.sayHello(); // Hello!
+Greetings.sayHi();    // Hi!
+
+You can also use aliasing to rename identically named functions or items from different files. 
+import { Wallet as W1 } from './wallet1';
+import { Wallet as W2 } from './wallet2';
+
+const w1 = new W1();
+const w2 = new W2();
+
+Object Destructuing 
+const { a: x, b: y } = { a: 1, b: 2 };
+
+x; //=> 1
+y; //=> 2
+
+It works by matching object properties.
+It also works for nested objects:
+const { a: { b } } = { a: { b: 2 } };
+
+a; //=> undefined (gasp)
+b; //=> 2
+
+const multiply = n => ({ one: n, two: n * 2, three: n * 3 });
+
+const { one, two, three } = multiply(10);
+one; //=> 10
+two; //=> 20
+three; //=> 30
+
+// printUser can receive an ob
+const printReviewUser = ({ userId: id }) => {
+  // code to fetch user object via userId
+  const user = fetchUserById(id);
+  console.log(`${user.fname} ${user.lname}`);
+};
+
+const printReview = ({ movie, comment, rating }) => {
+  console.log(`Watched ${movie}`);
+  console.log(`Gave it ${rating} stars!`);
+  console.log(`${comment}`);
+};
+
+printReviewUser(review);
+// Ned Ruggeri
+
+printReview(review);
+// Watched Star Trek
+// Gave it 5 stars!
+// It was excellent!
+

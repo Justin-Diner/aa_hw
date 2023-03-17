@@ -1,0 +1,26 @@
+installing react:
+	npm i -g create-react-app
+
+creating react app: 
+	npx create-react-app react-template --use-npm
+
+react-template
+├── README.md               A generic README for a generated project
+├── package-lock.json       The package lock file
+├── package.json            The package.json file
+├── public                  A directory to contain static images
+│   ├── favicon.ico         The fancy icon to show up in the tab
+│   ├── index.html          The skeleton HTML file React will put its DOM into
+│   ├── logo192.png         A small version of the React logo
+│   ├── logo512.png         A larger version of the React logo
+│   ├── manifest.json       A manifest file for mobile device screen shortcuts
+│   └── robots.txt          A robots.txt file
+└── src
+    ├── App.css             The App component's CSS
+    ├── App.js              The App component
+    ├── App.test.js         Test for the App component
+    ├── index.css           CSS for the entire site
+    ├── index.js            The entry file, code that renders the App component
+    ├── logo.svg            The fancy spinning React logo
+    ├── reportWebVitals.js  A performance measurement tool for the application
+    └── setupTests.js       A file to set up tests

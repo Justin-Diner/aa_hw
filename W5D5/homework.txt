@@ -1,0 +1,166 @@
+Goals:
+	- Use command-line arguments to pre-fill much of your Rails migrations
+	- Use a model generator to generate skeleton model files in addition to your migrations
+
+Rails gives you the ability to pre-fill the table from the command line. After the migration class name, you simply add a list of the desired column names. Follow each name with a : and its type, and separate the columns with spaces (no commas!)
+
+rails g migration CreateUsers name:string email:string age:integer
+Will create:
+
+class CreateUsers < ActiveRecord::Migration[7.0]
+  def change
+    create_table :users do |t|
+      t.string :name
+      t.string :email
+      t.integer :age
+
+      t.timestamps
+    end
+  end
+end
+
+You can even add index and unique from the command line:
+
+rails g migration CreateUsers name:string:index email:string:uniq age:integer
+
+class CreateUsers < ActiveRecord::Migration[7.0]
+  def change
+    create_table :users do |t|
+      t.string :name
+      t.string :email
+      t.integer :age
+
+      t.timestamps
+    end
+    add_index :users, :name
+    add_index :users, :email, unique: true
+  end
+end
+
+Adding Type Modifiers 
+You can also use {} to pass values for certain type of modifiers such as limit (for integer, string, text, and binary types) or for decimal types. 
+
+rails g migration CreateProducts name:string{10} 'price:decimal{5,2}'
+
+Unfortunately, Rails does not allow you to set null or default from the command line, so you will always have to add those column modifiers to your migrations manually.
+
+Remember, once happy with a migration, run "rails db:migrate"
+
+_______________
+Model Generator 
+
+Run "rails g" to see a full list of things rails can generate. 
+The syntax is similar to the syntax for generating migrations with two main differences:
+	- You specify that you are generating a model instead of a migration
+	- You provide the (singular) model name instead of the migration name
+
+rails g model User name:string:index email:string:uniq age:integer
+
+___________________________
+References and Foreign Keys
+
+In this reading you will learn how to use the references type to
+
+	- Set up an _id column of type bigint
+	- Index that column (or not)
+	- Set a foreign_key constraint on that column that links to the correct table
+	- Set up belongs_to associations in the model
+
+For any column that you want to use as a foreign key, you should designate the type as references. For example, using references in a model generator looks like this:
+
+rails g model Course name:string instructor:references
+
+Several points are worth noting:
+
+	- references appears nowhere in the schema; it is strictly syntactic sugar for your migration. The columns indicated as references in the migration will be type bigint in the schema / database.
+
+	- The references columns in the migration have no _id after their names. _id is automatically appended, however, in the schema / database. It is important to get this naming right. NEVER append _id to the name of any column in your migration whose type is references.
+
+	- Since the column in the database will have the _id at the end of its name, if you need to reference that column in the migration--e.g., as an argument for add_index--you should append the _id.
+
+	- Rails assumes that your migration uses conventional naming. It accordingly assumes that instructor_id points to an instructors table. (See, e.g., the add_foreign_key statement.) That is probably not what you want in this case.
+
+	- Because of the foreign_key constraints, this migration will not run successfully unless you have already created an instructors table in your database.
+
+___________________________
+to_table
+
+To have a reference point to a table with an unconventional name, you simply tell Active Record which table to use by setting the to_table option on foreign_key. For example, if instructor actually points to a users table, you would adjust your base migration like this:
+
+class CreateCourses < ActiveRecord::Migration[7.0]
+  def change
+    create_table :courses do |t|
+      t.string :name
+      t.references :instructor, null: false, foreign_key: { to_table: :users }
+
+      t.timestamps
+    end
+  end
+end
+
+_______________________________
+foreign_key constraints
+foreign_key constraints in your database ensure referential integrity. In other words, a foreign_key constraint ensures that the foreign keys in that column all link to actual records in the associated table. There can be no broken links (NULL is allowed, however).
+
+_______________________________
+Dependent Destroy
+Rails provides a way to ensure that destroying a model instance will automatically 1) destroy any such dependencies 2) in the proper order: dependent: :destroy.
+
+By the end of this reading, you should be able to
+
+Use the dependent: :destroy option on has_many / has_one associations to help maintain referential integrity and de-clutter your database
+Differentiate destroy and delete as methods for deleting records
+The dependent option determines what happens (:destroy) to the associated records.
+
+________________________________________
+
+destroy vs delete
+destroy runs callbacks before deleting the object; delete does not run callbacks before deleting the object.
+
+________________________________________
+Forcing Evaluation
+If you wish to force the evaluation of a Relation, you may call load.  This will force evaluation if it hasn't been done already. Using to_a will return an actual array.
+
+________________________________________
+Count vs. Length vs. Size
+While all three of these methods will return the number of records in the evaluated query, they do so in slightly different ways. When you call count on a relation, you will execute a SQL query (SELECT COUNT(*) FROM ...). Calling length, on the other hand, will load the entire collection into memory, convert it to an array, and then call Array#length on it. If used incorrectly, this could be an incredibly expensive operation (imagine if you have millions of users and call User.all.length).
+
+Using select with joins
+If you don't add a call to select to your call to joins, you'll only have access to columns from the primary table in your query.
+
+________________________________________
+N+1 
+Solution to N+1 Queries 
+If you use includes to prefetch data (e.g., posts = user.posts.includes(:comments)), a subsequent call to access the association (e.g., posts[0].comments) won't fire another DB query; it'll simply use the prefetched data..
+
+strict_loading
+As of Rails 6.1, you can test your methods for N+1 queries using strict_loading. strict_loading will throw an error if you try to access an association that has not been eagerly loaded. 
+
+________________________________________
+Scopes
+It's common to write commonly used queries as a scope.  A scope is just a fancy name for an ActiveRecord::Base class method that constructs all or part of a query and then returns the resulting Relation object.
+
+________________________________________
+Dynamic Finders
+You use ::find and ::find_by for this:
+
+Application.find_by(email_address: 'ned@appacademy.io')
+# returns the record whose email_address matches "ned@appacademy.io"
+
+Application.find(4)
+# returns the record with id 4
+::find accepts a single argument: the id of the record you're looking for. ::find_by accepts an options hash, which allows you to specify as many criteria as necessary. 
+An important difference to note is that ::find will raise an ActiveRecord::RecordNotFound exception if you search for a nonexistent record, whereas ::find_by will simply return nil.
+________________________________________
+order, group, and having
+To retrieve records from the database in a specific order, you can use the order method. You can apply GROUP BY and HAVING clauses.
+You can perform all the typical aggregations:
+
+Client.count
+Orders.sum(:total_price)
+Orders.average(:total_price)
+Orders.minimum(:total_price)
+Orders.maximum(:total_price)
+
+Finding by SQL
+Of course, instead of using all these fancy methods, you could also just use find_by_sql. 

@@ -1,0 +1,55 @@
+Passing props into components:
+ A parent component can pass down information to its children through React props. props is an object and an argument to a React function component that is passed down from a parent to a child component.
+
+ props is an object and an argument to a React function component that is passed down from a parent to a child component. It is always the first argument to a React function component.
+
+ function NavBar() {
+  const world = "world"
+  return (
+    <nav>
+      <h1>Pet App</h1>
+      <NavLinks hello={world} />
+    </nav>
+  );
+}
+
+For example, to read and use the props object in NavLinks, you can do the following:
+ function NavLinks(props) {
+  return (
+    <ul>
+      <li>
+        <a href="/hello">{props.hello}</a>
+      </li>
+      <li className="selected">
+        <a href="/pets">Pets</a>
+      </li>
+      <li>
+        <a href="/owners">Owners</a>
+      </li>
+    </ul>
+  );
+}
+
+You can pass down as many props keys as you want.
+
+Destructure props
+You can also explicitly define which props the child component should be expecting by destructuring the props object in the function component's parameter.
+
+function NavLinks({ hello, color }) {
+  return (
+    <ul>
+      <li>
+        <a href="/hello">{hello}</a>
+      </li>
+      <li className="selected">
+        <a href="/pets">Pets</a>
+      </li>
+      <li>
+        <a href="/owners">Owners</a>
+      </li>
+    </ul>
+  );
+}
+
+Destructuring props can help you make your code more readable so practice using this whenever you can!
+Props should never be changed within the child component!

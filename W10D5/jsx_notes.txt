@@ -1,0 +1,47 @@
+To create a React virtual DOM node using JSX, define HTML syntax in a JavaScript file.
+
+const hello = <h1>Hello World!</h1>
+
+const navBar = (
+  <nav>
+    <ul>
+      <li>Home</li>
+      <li>Profile</li>
+      <li>Settings</li>
+    </ul>
+  </nav>
+);
+
+const navList = (
+  <ul>
+    <li className="selected">
+      <a href="/pets">Pets</a>
+    </li>
+    <li>
+      <a href="/owners">Owners</a>
+    </li>
+  </ul>
+);
+Reminder: JSX uses camelCase instead of sword-case!
+
+To convert virtual DOM notes into real nodes you have to use the ReactDOM.render method. ReactDOM.render will convert the virtual DOM node into a real DOM and nest it under the given real DOM node. It takes a React virtual DOM node and a real DOM node in the document.
+
+// Put the element tree in a variable
+const navList = (
+  <ul>
+    <li className="selected">
+      <a href="/pets">Pets</a>
+    </li>
+    <li>
+      <a href="/owners">Owners</a>
+    </li>
+  </ul>
+);
+
+// Get a DOM node for React to render to
+const mainElement = document.querySelector('main');
+
+// Give React the element tree and the target
+ReactDOM.render(navList, mainElement);
+
+When you call ReactDOM.render again for the same component and target, React takes the existing virtual DOM it knows about last time it rendered the element tree, compares it to whatever new thing you want to render, and determines which (if any) of the living DOM needs to change.

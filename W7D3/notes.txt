@@ -1,0 +1,152 @@
+Add the following Gemfile to your ruby code:
+# my_app/Gemfile
+
+group :development, :test do
+  gem 'rspec-rails'
+end
+
+Run bundle install from the command line to install the gem.
+
+Run rails db:create on the command line to create your development and test databases.
+
+Next, install RSpec by running the following from the command line:
+rails g rspec:install
+
+A successful install will output the following message:
+create  .rspec
+create  spec
+create  spec/spec_helper.rb
+create  spec/rails_helper.rb
+
+Once those files have been created, tweak the default RSpec configuration so that it will format its output in a readable way. To do this, make your .rspec configuration file look like this:
+--require spec_helper
+--color
+--format documentation
+
+Shoulda Matchers Setup
+To set up Shoulda Matchers, first include the shoulda-matchers gem in your Gemfile under group :test and bundle install:
+group :test do
+  gem 'shoulda-matchers'
+end
+
+Next, you will need to specify some configuration options at the bottom of the rails_helper.rb file.
+# spec/rails_helper.rb
+require 'shoulda-matchers'
+
+# ...
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
+(Don't forget to include require 'shoulda-matchers' at the top of your rails_helper.rb file!)
+
+FactoryBot
+# GOOD
+cat = FactoryBot.build(:cat)
+
+These default values can be selectively overridden:
+evil_cat = FactoryBot.build(:cat, temperament: 'malicious')
+# evil_cat.temperament => "malicious"
+# evil_cat.name => "Fluffy"
+
+Faker - generates filler data like names, phone numbers, and Lorem Ipsum. You can use it to make your factories dynamic rather than static.
+You can set up FactoryBot and Faker in just three steps:
+
+1. Set up RSpec for your Rails application (see the "RSpec and Rails Setup" reading).
+2. In the Gemfile, add gem 'factory_bot_rails' and gem 'faker' under group :development, :test:
+
+# Gemfile
+group :development, :test do
+  gem 'factory_bot_rails'
+  gem 'faker'
+end
+(If you only want to use Faker in testing--and NOT, e.g., in your seeds.rb file--then you can just include it under group :test instead.)
+
+3. Run bundle install to install the faker and factory_bot_rails gems.
+Finally, if you don't want to prefix each FactoryBot method call with FactoryBot, add config.include FactoryBot::Syntax::Methods in your rails_helper.rb file:
+
+RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+end
+Then you can call, e.g., build(:user) instead of FactoryBot.build(:user) in your specs.
+
+FactoryBot.build vs. FactoryBot.create
+FactoryBot.build(:factory_name) returns an object that is not written to the database. FactoryBot.create(:factory_name) will write the created record to the database; it is therefore slower than build. Prefer build unless you have a need to write to the database.
+
+Fast And Easy Testing With spring And guard
+Make sure that your Gemfile includes these entries (and bundle install):
+
+group :development do
+  gem 'spring'
+  gem 'spring-commands-rspec'
+  gem 'guard-rspec'
+end
+
+Guard setup
+Run:
+
+bundle exec guard init
+This will create a Guardfile for you. This is where you set up regexes to match file paths that you want to monitor.
+
+Spring Setup
+First, go to config/environments/test.rb. Around lines 11-12, you should see these lines:
+
+# Turn false under Spring and add config.action_view.cache_template_loading = true.
+config.cache_classes = true
+Do what the comment says. Set config.cache_classes to false and then add the following line beneath it:
+
+config.action_view.cache_template_loading = true
+Back on the command line, run
+
+spring binstub --all
+This will create and/or modify some files in your bin directory so that certain commands (rspec, rake, and rails) can be run via the Spring runner.
+
+Setting up Capybara
+If you want to use Capybara in an app that you have already created without it, add the following gems to your Gemfile and bundle install:
+
+group :test do
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
+end
+Once Rspec is set up (rails g rspec:install), add require "capybara/rspec" to rails_helper.rb.
+
+At the top of each Capybara spec file, require the rails_helper:
+# spec/features/authentication_spec.rb
+
+require 'rails_helper'
+# ...
+
+Important Methods
+(This list is taken from the Capybara docs.)
+
+Visiting a page
+
+visit('/projects')
+visit(post_comments_path(post))
+Clicking
+
+click_link('id-of-link')
+click_link('Link Text')
+click_button('Save')
+click_on('Link Text') # clicks on either links or buttons
+click_on('Button Value')
+Forms
+
+fill_in('id-of-input', with: 'whatever you want')
+fill_in('Password', with: 'Seekrit')
+fill_in('Description', with: 'Really Long Text...')
+choose('A Radio Button')
+check('A Checkbox')
+uncheck('A Checkbox')
+attach_file('Image', '/path/to/image.jpg')
+select('Option', from: 'Select Box')
+unselect('Option', from: 'Select Box')
+Content (page)
+
+page.has_selector?('table tr')
+expect(page).to have_content('Blah blah blah')

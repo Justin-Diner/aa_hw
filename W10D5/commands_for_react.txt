@@ -4,6 +4,16 @@ installing react:
 creating react app: 
 	npx create-react-app react-template --use-npm
 
+App Academy's Create React App Template:
+npx create-react-app <project-folder-name> --template @appacademy/react-v17 --use-npm
+
+Installing React Router:
+cd my-app && npm install --save react-router-dom@^5.1.2
+import { BrowserRouter } from 'react-router-dom'; (within index.js)
+
+Importing NavLink in React Router
+import { BrowserRouter, Route, NavLink } from 'react-router-dom';
+
 react-template
 ├── README.md               A generic README for a generated project
 ├── package-lock.json       The package lock file

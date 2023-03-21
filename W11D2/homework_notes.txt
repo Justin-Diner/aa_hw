@@ -1,0 +1,58 @@
+A Class Component is a component that is defined using JavaScript Class syntax and extends the React.Component class from the react package.
+
+To render elements in a Class Component, you must define a render method on the class. The return value of the render method is what will be rendered by the component.
+
+class ClassComponent extends React.Component {
+  render() {
+    return (
+      <div></div>
+    );
+  }
+}
+
+Component props
+To access props in a Class Component, you can get the props object on the instance of the class.
+
+class ClassComponent extends React.Component {
+  render() {
+    return (
+      <>
+        <h1>{this.props.title}</h1>
+      </>
+    );
+  }
+}
+
+Component state
+In a Class Component, component state must be initialized in the constructor method on the class. To manipulate state key's values, you must use a single method on the class called setState. setState takes in an object with the key value pairs to change on the class's state object.
+
+Creating a Class Component
+import { Component } from 'react;
+Allows you to render. 
+
+Class componenets "extends Component". 
+
+To create state in a class component you need to make a constructor function.
+class CreateClassCOmponent extends Component {
+	constructor() {
+		super();
+		this.state = {
+			name: {
+				fname: 'JD'
+				lName: 'Richards'
+			}
+			color: 'yellow'
+		}
+	}
+	render () {
+		return (
+
+		)
+	}
+}
+
+Remember thaT you must call super if creating a constructor method. 
+All state is held in one object. The this.state object. 
+
+TO update state, you use .setState. this.setState(object);
+

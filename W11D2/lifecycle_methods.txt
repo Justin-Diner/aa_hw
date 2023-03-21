@@ -1,0 +1,6 @@
+Lifecycle methods of a Class Component are methods that are automatically invoked after a component is rendered.
+There are three main lifecycle methods. componentDidMount will run only once, right after the component's first render. componentDidUpdate will run after every render that isn't the first render. componentWillUnmount will run right before the component is removed from the component tree.
+
+componentDidMount() - only runs 1 time and 1 time only. Perfect place to fetch api data. 
+componentDidUpdate(prevProps, prevState) - runs after every subsequent render after first render (does not run 1st render). Both arguments are optional, you can also use this.state. (Always use a conditional here, or you risk a stack overflow.)
+componentWillUnmount() - will run just before a component is unmounted from the DOM. 

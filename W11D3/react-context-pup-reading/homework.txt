@@ -1,0 +1,54 @@
+Objectives:
+1. Create a React wrapper component
+2. Share and manage global information within a React application using COntext
+3. Create a React provider component that will manage the value of a Context. 
+4. Retrieve values from a Context throughout your application. 
+5. Describe the relationships between provider, consumer, and context. 
+
+Intro: React Context 
+We have only learned Prop Threading so far (parent to child). 
+
+React context is for very nested prop passing. 
+When should you use React context. - Designed to share data that be considered global. Needs to be used by MANY components at different nesting levels. 
+You will rerender all components subscribed to that context. 
+
+Prop Threader - A -> B -> C -> D -> E
+React Context - A -> E 
+
+3 Important Parts of Context API 
+Provider - A component that is used to wrap other components in order to give access to the context's value. In our case, we will wrap the entire application, <App /> 
+
+Consumer - Is a React component that reads a context's value. Consumer components must always be nested under Provider components because the Provider must render FIRST in order to pass that data down the tree. In other words, needs to exist before someone can talk to it. 
+
+Context - Allows "global" data in a React application and stores a single value. 
+	- createContext() - creates a global object. 
+	- useContext() - consumes that global information. 
+
+Create React Context: 
+Inside of the src folder create a context folder. THat holds a file (LanguageContext.js).
+
+export const LanguageContext = createContext(); 
+
+This gives us a Consumer and a Provider. We then wrap it around our application. 
+
+Ex: 
+<LanguageProvider>
+	<App /> 
+</LanguageProvider> 
+
+useContext - Makes all of the inforamtion from the provider available. You have to invoke useContext with the context you are referencing. 
+
+export const LanguageProvider = proprs => {
+	const [language, setLanguage] = useState('french')
+
+	return (
+		<LanguageContext.Provider value={{language, setLanguage, french, english }}>
+		{props.children} // Anything you place in between the tags will be the children of LanguageContext. 
+		</LanguageContext.Provider> 
+	)
+}
+
+React Builds 
+A "build" is the process of converting code into something that can actually execute or run on the target platform.
+
+Provider is used to wrap a React application to enable all components in the application to access the context's value. A Consumer is a React component that reads a context's value. Consumer components must always be nested under Provider components because the Provider must render first (parent components always render before children components).

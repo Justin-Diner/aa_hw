@@ -1,0 +1,61 @@
+React Hook Objectives:
+	1. Use the useState hook to manage a component's state. 
+	2. Use the useEffect hook to trigger an operation as a result of a side effect. 
+	3. Initialize and update state within a function component. 
+	4. Describe the three ways in which a re-render can be triggered for a React component. 
+	5. Optimize your application's performance by using useCallback and useRef. 
+	6. Use debugging tools to udnerstand and resolve issues with re-renders. 
+
+React Forms Objectives 
+	1. Create a React component containing a form. 
+	2. Define a single event handler method to handle onChange events for multiple form inputs. 
+	3. Construct a form that can capture user data using common form inputs. 
+	4. Describe a controlled input. 
+	5. Implement form validations. 
+	6. Handle form submission. 
+
+React Hooks 
+React Hooks are a way for function components to manage state and the component lifecycle. A Hook is a special function that lets you “hook into” React features. Hooks let developers use state and other React features directly in a function component, without writing a class. In a sense, a hook "listens" for changes in order to trigger a response.
+
+State Hooks
+useState declares a "state variable." It preserves some value between the function calls. State variables are preserved by react. 
+The only argument to the useState() hook is the initial state. useState returns a pair of values: the current state, and a function that updates it. This is why developpers typically write const [count, setCount] = useState(). Use state returns an array and we desctructure that array. 
+
+Effect Hooks 
+Typically you want to perform effects AFTER React has updated the DOM. That's what the useEffect hook helps you do. 
+useEffect tells React that your component needs to do something after render. React will remember the function you passed (referred to as "the effect"), and call it later after performing the DOM updates. Place useEffect inside the component allows you to access any state variable or prop right from the effect. By default, useEffect runs both after the first render and after every update (rerender). THe only required argument is the function to call. Many times, you may want to include a second argument, which is an array of variables that the function depends on. 
+
+Other Hooks 
+	1. useCallback - allows you to wrap a function definition, so it only gets remade when certain values change. 
+	2. useContext - Allow you to read a context and subscribe to its changes. 
+	3. useRef - A mutable (that is, changeable) ref object often used to store a pointer to dom elements. 
+	4. useReducer - Alternative to useState for cases where you have complex objects. 
+
+Hook Rules 
+	1. Only call hooks from React FUNCTION components. 
+	2. DOn't call Hooks inside loops, conditions, or nested functions. 
+	3. Hooks must always be called in the same order. 
+	4. useEffect hook MUST return a callback function. 
+	5. DOn't use async before the useEffect callback function. 
+
+State - A variable where one can store and preserve values between re-renders. A render or re-render is when the functional component, is invoked again. 
+Two Kinds of State:
+1. Component or local state (useState)
+2. Global State (React Context, Redux)
+
+State does not persist after reloading the page. 
+
+useEffect hook - handles asynchronous operations and invokes side effects in functional components. 
+Side Effects are anything that affects something outside the scope of the current function being executed. 
+When do we use useEffect Hook? 
+	1. Data Fetching
+	2. Handling Subscriptions
+	3. Timers
+	4. Directly changing the DOM
+	5. Updating based on state or props. 
+
+useEffect syntax - useEffect(function, array)
+
+useEffect(() => {
+	logic goes here
+}, [dependency array])

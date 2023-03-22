@@ -52,3 +52,10 @@ React Builds
 A "build" is the process of converting code into something that can actually execute or run on the target platform.
 
 Provider is used to wrap a React application to enable all components in the application to access the context's value. A Consumer is a React component that reads a context's value. Consumer components must always be nested under Provider components because the Provider must render first (parent components always render before children components).
+
+useContext will cause your component to re-render if the value of the context changes. The flow of context will look something like this:
+
+The context value is set by the provider and will be stored and maintained as a state variable in the provider component
+The context value can be read by any consumer components
+When the value of the provider component's state variable changes, the provider component will re-render and the context's value will change
+The consumer components are subscribed to changes to the context value through the useContext hook so they will re-render even though there are no props or component state changes.

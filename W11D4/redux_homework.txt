@@ -1,0 +1,90 @@
+1. Describe the relationship between Redux and Flux
+2. Describe the three principles that Redux abides by 
+3. Describe the Redux data cycle. 
+
+Flux is a front-end application architecture Facebook developed to use with React. Flux is simply a pattern in which to structure one's application. Flux provides unidirectional data flow. 
+
+Actions 
+An action begins the flow of data in Flux. An action is a simple object that at a minimum contains (1) a type. An action's type indicates the type of change to be performed on the application's state. An action may contain additional data (the "payload") that's necessary for changing the application's former state to its next one. 
+
+Dispatcher 
+The dispatcher is a mechanism for distributing or (dispatching) actions to a Flux application's store. Redux consolidates the dispatcher into a single dispatch() function. 
+
+Store 
+THe store represents the entire state of the application. It's also responsible for updating the state of the application appropriately whenever it receives an action. It does so by registering with the dispatcher a callback function that receives an action. After the store has changed state, it "emits a change," i.e., the store passes the new state to any views that have registered listeners (callbacks) to it. 
+
+View 
+A view is a unit of code that's responsible for rendering the user interface. To complete the Flux pattern, a view listens to change events emitted by the store. When a change to application's data layer occurs, a view can respons appropriately. A view can create actions itself. 
+
+Redux 
+Redux is a library that factiliates a particular implementation of FLux. 
+	Redux Loop: 
+	1. Single Source of Truth - The entire state of the application is stored in a single JavaScript object in a single store. This object is commonly referred to as a "state tree" because its values often contain or objects themselves. 
+	2. State is Read-Only: The only way to change the state is to dispatch an action. This principle ensures that our Redux loop is never short-circuited and change of state remains single-threaded. 
+	3. Only Pure Functions Change State: Pure functions known as "reducers" receive the previous state and an action and return the next state. They return new state objects instead of mutating previous state. 
+
+	Vocabulary
+	State -  The state of a program means all the information stored by that program at a particular point in time. The job of Redux is to store the state of your app and make it available to entire app.
+
+	Store - The Redux store is a single JavaScript object with a few methods, including getState, dispatch(action), and subscribe(listener). Any state you want Redux to handle is held in the store.
+
+	Actions - An action is a POJO (plain old JavaScript object) with a type property. Actions contain information that can be used to update the store.  They can be dispatched, i.e. sent to the store, in response to user actions or AJAX requests.
+
+	Pure functions - A function is pure if its behavior depends only its arguments and it has no side effects.
+
+	Reducer - A reducer is a function that is called each time an action is dispatched.  The reducer receives an action and the current state as arguments and returns an updated state.
+
+	Middleware - Middleware is an optional component of Redux that allows custom responses to dispatched actions. 
+
+	Time traveling dev tools - Redux reducers are pure functions of the dispatched action and the current state. This means that if one were to store a list of the previous states over time and the actions that had been dispatched, one could retroactively cancel an action and recalculate the state as if that action had never been dispatched.
+
+	Thunks - A thunk is a general concept in computer science referring to a function whose primary purpose is simply to call another function.
+
+	Redux Store 
+	The store is the central element of Redux's architecture. It holds the global state of an application. The store is responsible for updating the global state via its reducer, broadcasting state updates via subscription, and listening for actions that tell it when to update the state.
+
+The store is responsible for:
+
+Returning the current state
+Updating the state
+Notify subscribed components (call functions) whenever the state gets updated
+The store has three methods: getState(), dispatch(action), and subscribe(callback).
+
+getState() - Returns the store's current state.
+dispatch(action) - Passes an action into the store's reducer telling it what information to update.
+subscribe(callback) - Registers a callback to be triggered whenever the store updates. Returns a function, which when invoked, unsubscribes the callback function from the store.
+
+Creating the store
+The redux library provides us with a createStore() method, which takes up to three arguments and returns a Redux store.
+import { createStore } from 'redux';
+
+const store = createStore(reducer, preloadedState, enhancer);
+
+	1. reducer (required) - A reducing function that receives the store's current state and incoming action, determines how to update the store's state, and returns the next state (more on this in a moment).
+	2. preloadedState (optional) - An object representing any application state that existed before the store was created.
+	3. enhancer (optional) - A function that adds extra functionality to the store.
+
+Updating the store
+Store updates can only be triggered by dispatching actions:
+	store.dispatch(action);
+
+An action in Redux is just a plain-old JavaScript object (POJO) with:
+
+a type key indicating the action being performed, and
+optional payload keys containing any new information.
+const addOrange = {
+  type: 'ADD_FRUIT',
+  fruit: 'orange',
+};
+
+Any action that gets dispatched will be passed into the store's root reducer. A reducer is a function that accepts the current state and an action and determines how the next state will look like based on the action.
+
+When store.dispatch() is called, the store passes its current state, along with the action being dispatched, to the reducer. The reducer function takes the two arguments (state and action) and returns the next state.
+
+Subscribing to the store
+Once the store has processed a dispatch(), it triggers all its subscribers.
+
+Reviewing a simple example: 
+To create the store, you need a root reducer, an optional preloaded state, and an optional enhancer. Invoke the createStore method from the redux library with them which will return a Redux store.
+
+As you've already learned from an earlier article, dispatching actions is the only way to trigger changes to the store's state.Remember, actions are simple POJOs with a mandatory type key and optional payload keys containing new information. They get sent using store.dispatch() and are the primary drivers of the Redux loop.

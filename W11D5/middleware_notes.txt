@@ -1,0 +1,108 @@
+Middleware, as you saw with Rack, is software that intercepts a process, either to redirect it or to generate some side effect.
+
+In Redux, middleware specifically refers to an enhancer passed to the Store via createStore(). When a dispatch is made, the middleware intercepts the action before it reaches the reducer. The middleware can then:
+
+	- resolve the action itself (for example, by making an AJAX request),
+	- pass along the action (if the middleware isn't concerned with it),
+	- generate a side effect (such as logging debugging information),
+	- send another dispatch (if the action triggers other actions),
+	- or some combination thereof.
+
+createStore() accepts 3 arguments (reducer, preloadedState, enhancer); middleware is given to the store via the optional enhancer argument.
+
+All middleware functions need to conform to the same signature in order to be compatible with the store and other middlewares.
+
+A function signature is the set of inputs and output of a function. A Redux middleware must always have the following signature:
+
+const middleware = store => next => action => {
+  // side effects, if any
+  return next(action);
+};
+
+Another Example: 
+
+const logger = store => next => action => {
+
+  console.log('Action received:', action);
+  console.log('State pre-dispatch:', store.getState());
+
+  let result = next(action);
+
+  console.log('State post-dispatch:', store.getState());
+
+  return result;
+};
+
+Just memorize the middleware signature and you will be OK.A
+
+EXAMPLE TO INCLUDE LOGGER 
+npm install redux-logger
+
+Pass an instance of redux-logger to applyMiddleware when creating your store:
+
+// store/store.js
+
+import { createStore, applyMiddleware } from 'redux';
+import rootReducer from 'reducers';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
+
+let configureStore = (preloadedState = {}) => (
+  createStore(
+    rootReducer,
+    preloadedState,
+    applyMiddleware(thunk, logger)
+  )
+);
+
+export default configureStore;
+
+Thunks 
+
+Rather than returning a plain object, a thunk action creator returns a function. This function, when called with an argument of dispatch, can then dispatch one or more actions, immediately, or later. 
+
+const thunkActionCreator = () => dispatch => {
+  dispatch({
+    type: 'RECEIVE_MESSAGE',
+    message: 'This will be dispatched immediately.'
+  });
+
+  setTimeout(() => dispatch({
+    type: 'RECEIVE_MESSAGE',
+    message: 'This will be dispatched 1 second later.'
+  }, 1000));
+}
+
+You need middleware to intercept all actions of type function before it gets to the reducer. Instead of passing the function action into the reducer, it will invoke it with the Redux store's dispatch and getState methods. This middleware is called a thunk middleware. It intercepts thunk actions, or functions that have been dispatched. Here's an example of a thunk middleware.
+
+const thunk = ({ dispatch, getState }) => next => action => {
+  if (typeof action === 'function') {
+    return action(dispatch, getState);
+  }
+  return next(action);
+};
+
+export default thunk;
+
+A regular POJO action creator is a function that returns a POJO (Plain-Old JavaScript Object) with a type key. A thunk action creator is a function that returns a thunk function. A thunk function is a function that is invoked by the thunk middleware and gets passed the dispatch and getState store methods.
+
+Dispatching thunk actions in a component is just like dispatching regular POJO actions. Use the useDispatch React-Redux hook to get the store's dispatch method and dispatch a thunk action on a user input or in a useEffect.
+
+Videos:
+Redux is not capable of handling asynchronous behavior. Redux allows us to make those calls to our server. Thunk is a function that is returned by a thunk creator. Its a function that returns a function. 
+
+THere are two syntaxes for returning thunks: 
+export function thunkCreator(data) {
+	return function thunk(dispatch, getState)
+}
+
+export const thunkCreator = (data) => (dispatch, getState) => {
+}
+
+Adding a Proxy. A proxy is simply a gateway to connect your frontend server to your backend server. It will allow us to use an abbreviated URL to do that. 
+
+To Install redux Thunk 
+
+import thunk from 'redux-thunk'
+Add it within your applyMiddleware function in store creator. 
+

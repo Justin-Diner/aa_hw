@@ -1,0 +1,12 @@
+has_secured_password 
+There are two criteria, however, that you must satisfy to use this macro:
+You must have a password_digest string or text column defined in the table for whichever model uses has_secure_password--the users table, typically.
+You must include bcrypt in your Gemfile at the top level--don't forget to bundle install!
+
+What has_secure_password defines
+Specifically, has_secure_password defines:
+
+A #password= setter, which gets called when you pass a key of password to User.new or User.create. It takes in a plaintext password, hashes it using bcrypt, stores the hashed version in password_digest to be saved to the database, and stores the plaintext version in-memory in @password for use in validations.
+A #password getter, which is used by password validations.
+#authenticate, which takes in a plaintext password and uses bcrypt to check if it matches the user's password_digest. It returns the User instance itself when the password is correct, false otherwise.
+A presence: true validation for password_digest. Note that if you fail this validation, Rails will list the failing attribute as password, but rest assured: it is in fact the password_digest attribute that is checked for presence.
